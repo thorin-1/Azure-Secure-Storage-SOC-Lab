@@ -1,0 +1,7 @@
+// Hunting query for successful SAS-authenticated Blob reads.
+StorageBlobLogs
+| where OperationName == "GetBlob"
+| where toint(StatusCode) == 200
+| where AuthenticationType has "Sas"
+| project TimeGenerated, AuthenticationType, CallerIpAddress, UserAgentHeader, Uri
+| order by TimeGenerated desc

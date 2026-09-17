@@ -1,0 +1,15 @@
+// Detect failed Azure Blob operations.
+// Tune status codes and thresholds for the environment before production use.
+StorageBlobLogs
+| extend StatusCodeNumber = toint(StatusCode)
+| where StatusCodeNumber >= 400
+| project
+    TimeGenerated,
+    OperationName,
+    StatusCode,
+    StatusText,
+    AuthenticationType,
+    CallerIpAddress,
+    Uri,
+    UserAgentHeader
+| order by TimeGenerated desc

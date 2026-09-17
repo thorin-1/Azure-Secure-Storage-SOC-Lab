@@ -1,0 +1,19 @@
+// Behavioral detection: successful user-delegation SAS access to the same Blob
+// from more than one source IP during the query window.
+StorageBlobLogs
+| where OperationName == "GetBlob"
+| where toint(StatusCode) == 200
+| where AuthenticationType == "DelegationSas"
+| where UserAgentHeader !contains "Google-Read-Aloud"
+| extend SourceIP = tostring(split(CallerIpAddress, ":")[0])
+| extend BlobPath = tostring(split(Uri, "?")[0])
+| summarize
+    AccessCount = count(),
+    DistinctIPs = dcount(SourceIP),
+    SourceIPs = make_set(SourceIP),
+    UserAgents = make_set(UserAgentHeader),
+    FirstSeen = min(TimeGenerated),
+    LastSeen = max(TimeGenerated)
+  by BlobPath
+| where DistinctIPs > 1
+| order by LastSeen desc

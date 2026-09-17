@@ -1,0 +1,26 @@
+# Secrets and credentials
+*.pem
+*.key
+*.pfx
+*.cer
+*.crt
+.env
+.env.*
+secrets.*
+credentials.*
+
+# Azure / Terraform local state if added later
+.azure/
+.terraform/
+*.tfstate
+*.tfstate.*
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Temporary exports
+*.log
+*.tmp
